@@ -11,4 +11,19 @@ public abstract class Person  {
         this.lastName = lastName;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String toString() {
+        return firstName + " " + lastName;
+    }
 }
