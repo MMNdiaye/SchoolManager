@@ -5,8 +5,8 @@ import java.util.HashMap;
 public class Student extends Person {
     private HashMap<Course, Integer> grades;
 
-    public Student(int userId, String firstName, String lastName){
-        super(userId, firstName, lastName);
+    public Student(int userId, String firstName, String lastName, String password){
+        super(userId, firstName, lastName, password);
     }
 
     public HashMap<Course, Integer> getGrades() {

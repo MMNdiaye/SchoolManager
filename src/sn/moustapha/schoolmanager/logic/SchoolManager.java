@@ -71,7 +71,17 @@ public class SchoolManager {
         }
    }
 
+   // Manager functions
 
+    public Person findPerson(int id, String password) {
+        for (Person person : persons) {
+            boolean hasSameId = (person.getUserId() == id);
+            boolean hasSamePassword = (person.getPassword().equals(password));
+            if (hasSameId && hasSamePassword)
+                return person;
+        }
+        return null;
+    }
 
 
 }

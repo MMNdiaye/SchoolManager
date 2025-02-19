@@ -6,8 +6,8 @@ public class Teacher extends Person{
     private ArrayList<Course> courses;
 
 
-    public Teacher(int userId, String firstName, String lastName) {
-        super(userId, firstName, lastName);
+    public Teacher(int userId, String firstName, String lastName, String password) {
+        super(userId, firstName, lastName, password);
         this.courses = new ArrayList<>();
     }
 

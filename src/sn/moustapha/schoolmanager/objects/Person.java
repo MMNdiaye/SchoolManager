@@ -2,13 +2,15 @@ package sn.moustapha.schoolmanager.objects;
 
 public abstract class Person  {
     private int userId;
+    private String password;
     private String firstName;
     private String lastName;
 
-    public Person(int userId, String firstName, String lastName) {
+    public Person(int userId, String firstName, String lastName, String password) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -21,6 +23,10 @@ public abstract class Person  {
 
     public int getUserId() {
         return userId;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String toString() {
