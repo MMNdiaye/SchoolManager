@@ -9,6 +9,10 @@ public class Student extends Person {
         super(userId, firstName, lastName, password);
     }
 
+    public Student(String firstName, String lastName, String password){
+        super(firstName, lastName, password);
+    }
+
     public HashMap<Course, Integer> getGrades() {
         return grades;
     }

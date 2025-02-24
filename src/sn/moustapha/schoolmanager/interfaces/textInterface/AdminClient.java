@@ -1,5 +1,7 @@
 package sn.moustapha.schoolmanager.interfaces.textInterface;
 
+import sn.moustapha.schoolmanager.objects.Student;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -23,6 +25,12 @@ public class AdminClient extends UserClient{
             System.out.println(options);
 
             int option = sc.nextInt();
+
+            switch (option) {
+                case 1:
+
+
+            }
             if (option == 0) {
                 System.out.println("See you next time");
                 user = null;
@@ -32,5 +40,23 @@ public class AdminClient extends UserClient{
 
         }
     }
+
+    private void createAccount() {
+        System.out.print("Enter first name: ");
+        String firstName = scanner.next();
+        System.out.println("Enter last name: ");
+        String lastName = scanner.next();
+        System.out.println("Enter account password: ");
+        String password = scanner.next();
+        System.out.println("Select role: ");
+        String role = scanner.next();
+
+        if (role.equals("student")) {
+            Student student = new Student(firstName, lastName, password);
+            schoolManager.addStudent(student);
+        }
+    }
+
+
 
 }

@@ -13,27 +13,28 @@ public class UserClient {
     protected Person user;
     protected final SchoolManager schoolManager = new SchoolManager();
     private UserClient client;
+    protected Scanner scanner;
 
     public UserClient() throws SQLException {
+        scanner = new Scanner(System.in);
     }
 
 
     protected final void login () throws SQLException {
         System.out.println("Login interface");
-        Scanner sc = new Scanner(System.in);
         boolean loggedIn = false;
         while (true) {
             // Logging option
             System.out.println("Log in? y/n");
-            String response =  sc.next().toLowerCase();
+            String response =  scanner.next().toLowerCase();
             if (response.equals("n"))
                 break;
 
             // User login inputs
             System.out.print("Enter id: ");
-            int userId = sc.nextInt();
+            int userId = scanner.nextInt();
             System.out.println("Enter password");
-            String password = sc.next();
+            String password = scanner.next();
             Person person = schoolManager.findPerson(userId, password);
             if (person != null)
                 loggedIn = true;

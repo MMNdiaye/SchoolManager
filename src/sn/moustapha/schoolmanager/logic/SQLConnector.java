@@ -26,6 +26,13 @@ public class SQLConnector {
         return result;
     }
 
+    public ResultSet loadClasses() throws SQLException {
+        Statement statement  = con.createStatement();
+        String query = "SELECT * FROM classes";
+        ResultSet result = statement.executeQuery(query);
+        return result;
+    }
+
 
 
 
