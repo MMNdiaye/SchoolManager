@@ -13,12 +13,6 @@ public abstract class Person  {
         this.password = password;
     }
 
-    public Person(String firstName, String lastName, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -33,10 +27,6 @@ public abstract class Person  {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String toString() {

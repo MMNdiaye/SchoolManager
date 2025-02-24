@@ -10,16 +10,12 @@ import java.util.HashMap;
 
 public class SchoolManager {
     private ArrayList<Person> persons;
-    private ArrayList<Class> classes;
     private SQLConnector dbConnector;
 
     public SchoolManager() throws SQLException {
         persons = new ArrayList<>();
-        classes = new ArrayList<>();
         dbConnector = new SQLConnector();
-        dbConnector.connectToDatabase();
         loadPersons();
-        loadClasses();
     }
 
     // Admin functions
@@ -79,7 +75,6 @@ public class SchoolManager {
 
    // Manager functions
 
-
     public Person findPerson(int id, String password) {
         for (Person person : persons) {
             boolean hasSameId = (person.getUserId() == id);
@@ -90,7 +85,8 @@ public class SchoolManager {
         return null;
     }
 
-    private void loadPersons() throws SQLException {
+    public void loadPersons() throws SQLException {
+        dbConnector.connectToDatabase();
         ResultSet loadedResults = dbConnector.loadAccounts();
         while (loadedResults.next()) {
             int userId = loadedResults.getInt("account_id");
@@ -117,17 +113,6 @@ public class SchoolManager {
             }
             persons.add(person);
         }
-    }
-
-    private void loadClasses() throws SQLException {
-        ResultSet loadedResults = dbConnector.loadClasses();
-        while(loadedResults.next()) {
-
-        }
-    }
-
-    public ArrayList<Class> getClasses() {
-        return classes;
     }
 
 
