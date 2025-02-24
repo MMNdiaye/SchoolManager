@@ -1,10 +1,14 @@
 package sn.moustapha.schoolmanager.interfaces.textInterface;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class StudentClient extends UserClient {
 
-    public void start() {
+    public StudentClient() throws SQLException {
+    }
+
+    public void start() throws SQLException {
         System.out.println("Hello " + user + "What do you want to do?");
         Scanner sc = new Scanner(System.in);
         while (true) {

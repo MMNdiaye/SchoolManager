@@ -6,6 +6,7 @@ import sn.moustapha.schoolmanager.objects.Person;
 import sn.moustapha.schoolmanager.objects.Student;
 import sn.moustapha.schoolmanager.objects.Teacher;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class UserClient {
@@ -13,17 +14,15 @@ public class UserClient {
     protected final SchoolManager schoolManager = new SchoolManager();
     private UserClient client;
 
-    public UserClient() {
-        login();
+    public UserClient() throws SQLException {
     }
 
 
-    protected final void login() {
+    protected final void login () throws SQLException {
         System.out.println("Login interface");
         Scanner sc = new Scanner(System.in);
         boolean loggedIn = false;
         while (true) {
-
             // Logging option
             System.out.println("Log in? y/n");
             String response =  sc.next().toLowerCase();
@@ -44,7 +43,6 @@ public class UserClient {
             if (loggedIn) {
                 user = person;
                 createUserInterface();
-                sc.close();
                 break;
             }
 
@@ -53,12 +51,16 @@ public class UserClient {
         }
     }
 
-    public void start() {
+    public void start() throws SQLException {
+        login();
         if (client != null)
-            client.start();
+            client.launch();
     }
 
-    private void createUserInterface() {
+    public void launch() throws SQLException {
+
+    }
+    private void createUserInterface() throws SQLException {
         if (user instanceof Student)
             client = new StudentClient();
         else if (user instanceof Teacher)

@@ -1,19 +1,21 @@
 package sn.moustapha.schoolmanager.logic;
 
+import sn.moustapha.schoolmanager.objects.*;
 import sn.moustapha.schoolmanager.objects.Class;
-import sn.moustapha.schoolmanager.objects.Course;
-import sn.moustapha.schoolmanager.objects.Person;
-import sn.moustapha.schoolmanager.objects.Student;
-import sn.moustapha.schoolmanager.objects.Teacher;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SchoolManager {
     private ArrayList<Person> persons;
+    private SQLConnector dbConnector;
 
-    public SchoolManager(){
+    public SchoolManager() throws SQLException {
         persons = new ArrayList<>();
+        dbConnector = new SQLConnector();
+        loadPersons();
     }
 
     // Admin functions
@@ -81,6 +83,36 @@ public class SchoolManager {
                 return person;
         }
         return null;
+    }
+
+    public void loadPersons() throws SQLException {
+        dbConnector.connectToDatabase();
+        ResultSet loadedResults = dbConnector.loadAccounts();
+        while (loadedResults.next()) {
+            int userId = loadedResults.getInt("account_id");
+            String firstName = loadedResults.getString("first_name");
+            String lastName = loadedResults.getString("last_name");
+            String password = loadedResults.getString("password");
+            Person person = null;
+            String role = loadedResults.getString("account_type");
+            switch (role) {
+                case "Student":
+                    person = new Student(userId,firstName,lastName, password);
+                    break;
+
+                case "Teacher":
+                    person = new Teacher(userId,firstName,lastName, password);
+                    break;
+
+                case "Admin":
+                    person = new Admin(userId,firstName,lastName, password);
+                    break;
+
+                default:
+                    continue;
+            }
+            persons.add(person);
+        }
     }
 
 
