@@ -34,10 +34,6 @@ public class SchoolManager {
     }
 
 
-    public void addTeacher(Teacher teacher) {
-        persons.add(teacher);
-    }
-
     public void addCourse(Class schoolClass, Course course) {
         schoolClass.addCourse(course);
     }
@@ -47,7 +43,18 @@ public class SchoolManager {
     }
 
     public void addStudent(Student student, int classId) throws SQLException {
+        addPerson(student);
         dbConnector.insertStudent(student, classId);
+    }
+
+    public void addTeacher(Teacher teacher) throws SQLException {
+        persons.add(teacher);
+        dbConnector.insertTeacher(teacher);
+    }
+
+    public void addAdmin(Admin admin) throws SQLException {
+        persons.add(admin);
+        dbConnector.insertAdmin(admin);
     }
 
     public void removeStudent(Student student, Class schoolClass) {
@@ -88,8 +95,9 @@ public class SchoolManager {
         if (!hasNextEntry)  // empty
             return false;
 
+        System.out.println();
         while (hasNextEntry) {
-            System.out.println(rs.getInt("class_id"));
+            System.out.print(rs.getInt("class_id") + ", ");
             hasNextEntry = rs.next();
         }
 

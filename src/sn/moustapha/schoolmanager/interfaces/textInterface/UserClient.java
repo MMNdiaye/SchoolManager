@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class UserClient {
-    protected Person user;
+    protected static Person user;
     protected final SchoolManager schoolManager = new SchoolManager();
     private UserClient client;
     protected Scanner sc;

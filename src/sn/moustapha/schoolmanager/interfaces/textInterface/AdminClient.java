@@ -1,7 +1,7 @@
 package sn.moustapha.schoolmanager.interfaces.textInterface;
 
+import sn.moustapha.schoolmanager.objects.*;
 import sn.moustapha.schoolmanager.objects.Class;
-import sn.moustapha.schoolmanager.objects.Student;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class AdminClient extends UserClient{
 
     public AdminClient() throws SQLException {
+
     }
 
     public void launch() throws SQLException {
@@ -29,6 +30,13 @@ public class AdminClient extends UserClient{
             switch (option) {
                 case 1:
                     getAccountInfos();
+                    break;
+
+                case 3:
+
+
+                case 5 :
+                    schoolManager.addClass();
                     break;
 
                 default:
@@ -53,8 +61,13 @@ public class AdminClient extends UserClient{
         String password = sc.next();
         System.out.println("Role: ");
         String role = sc.next();
-        if (role.equals("student"))
+
+        if (role.equals("Student"))
             getStudentInfos(firstName, lastName, password);
+        else if (role.equals("Teachers"))
+            getTeacherInfos(firstName, lastName, password);
+        else
+            getAdminInfos(firstName, lastName, password);
 
     }
 
@@ -76,5 +89,17 @@ public class AdminClient extends UserClient{
         schoolManager.addStudent(student, classId);
 
     }
+
+    private void getTeacherInfos(String firstName, String lastName, String password) throws SQLException {
+        Teacher teacher = new Teacher(firstName, lastName, password);
+        schoolManager.addTeacher(teacher);
+    }
+
+    private void getAdminInfos(String firstName, String lastName, String password) throws SQLException {
+        Admin admin = new Admin(firstName, lastName, password);
+        schoolManager.addAdmin(admin);
+    }
+
+
 
 }
