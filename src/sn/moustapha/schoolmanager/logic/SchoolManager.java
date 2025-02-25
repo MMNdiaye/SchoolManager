@@ -15,6 +15,7 @@ public class SchoolManager {
     public SchoolManager() throws SQLException {
         persons = new ArrayList<>();
         dbConnector = new SQLConnector();
+        dbConnector.connectToDatabase();
         loadPersons();
     }
 
@@ -27,6 +28,12 @@ public class SchoolManager {
     public void removePerson(Person person) {
         persons.remove(person);
     }
+
+    public void addClass() throws SQLException {
+        dbConnector.insertClass();
+    }
+
+
     public void addTeacher(Teacher teacher) {
         persons.add(teacher);
     }
@@ -39,8 +46,8 @@ public class SchoolManager {
         schoolClass.removeCourse(course);
     }
 
-    public void addStudent(Student student, Class schoolClass) {
-        schoolClass.addStudent(student);
+    public void addStudent(Student student, int classId) throws SQLException {
+        dbConnector.insertStudent(student, classId);
     }
 
     public void removeStudent(Student student, Class schoolClass) {
@@ -75,6 +82,20 @@ public class SchoolManager {
 
    // Manager functions
 
+    public boolean showClasses() throws SQLException {
+        ResultSet rs = dbConnector.loadClasses();
+        boolean hasNextEntry = rs.next();
+        if (!hasNextEntry)  // empty
+            return false;
+
+        while (hasNextEntry) {
+            System.out.println(rs.getInt("class_id"));
+            hasNextEntry = rs.next();
+        }
+
+        return true;
+    }
+
     public Person findPerson(int id, String password) {
         for (Person person : persons) {
             boolean hasSameId = (person.getUserId() == id);
@@ -86,7 +107,6 @@ public class SchoolManager {
     }
 
     public void loadPersons() throws SQLException {
-        dbConnector.connectToDatabase();
         ResultSet loadedResults = dbConnector.loadAccounts();
         while (loadedResults.next()) {
             int userId = loadedResults.getInt("account_id");

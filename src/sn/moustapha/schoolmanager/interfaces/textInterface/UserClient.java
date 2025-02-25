@@ -13,14 +13,15 @@ public class UserClient {
     protected Person user;
     protected final SchoolManager schoolManager = new SchoolManager();
     private UserClient client;
+    protected Scanner sc;
 
     public UserClient() throws SQLException {
+        sc = new Scanner(System.in);
     }
 
 
-    protected final void login () throws SQLException {
+    protected final boolean login () throws SQLException {
         System.out.println("Login interface");
-        Scanner sc = new Scanner(System.in);
         boolean loggedIn = false;
         while (true) {
             // Logging option
@@ -49,11 +50,12 @@ public class UserClient {
             System.out.println("Account not found.");
 
         }
+        return loggedIn;
     }
 
     public void start() throws SQLException {
-        login();
-        if (client != null)
+        boolean isLoggedIn = login();
+        if (isLoggedIn)
             client.launch();
     }
 

@@ -1,5 +1,8 @@
 package sn.moustapha.schoolmanager.interfaces.textInterface;
 
+import sn.moustapha.schoolmanager.objects.Class;
+import sn.moustapha.schoolmanager.objects.Student;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -23,14 +26,55 @@ public class AdminClient extends UserClient{
             System.out.println(options);
 
             int option = sc.nextInt();
-            if (option == 0) {
-                System.out.println("See you next time");
-                user = null;
-                login();
-                break;
+            switch (option) {
+                case 1:
+                    getAccountInfos();
+                    break;
+
+                default:
+                    System.out.println("See you next time");
+                    user = null;
+                    login();
+                    break;
             }
 
+
         }
+    }
+
+    // Account creation methods
+
+    private void getAccountInfos() throws SQLException {
+        System.out.println("First name: ");
+        String firstName = sc.next();
+        System.out.println("Last name: ");
+        String lastName = sc.next();
+        System.out.println("Password: ");
+        String password = sc.next();
+        System.out.println("Role: ");
+        String role = sc.next();
+        if (role.equals("student"))
+            getStudentInfos(firstName, lastName, password);
+
+    }
+
+    private void getStudentInfos(String firstName, String lastName, String password) throws SQLException {
+        // get class ids and create one if needed
+        boolean hasClasses = schoolManager.showClasses();
+        if (!hasClasses) {
+            System.out.println("No classes would you want to create one? y/n");
+            String response = sc.next();
+            if (response.toLowerCase().equals("y"))
+                schoolManager.addClass();
+            else
+                return;
+        }
+        System.out.print("Select a class id: ");
+        schoolManager.showClasses();
+        int classId = sc.nextInt();
+        Student student = new Student(firstName, lastName, password);
+        schoolManager.addStudent(student, classId);
+
     }
 
 }
