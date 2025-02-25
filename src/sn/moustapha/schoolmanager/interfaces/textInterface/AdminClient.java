@@ -40,12 +40,15 @@ public class AdminClient extends UserClient{
                     break;
 
                 default:
-                    System.out.println("See you next time");
-                    user = null;
-                    login();
+                    option = 0;
                     break;
             }
 
+            if (option == 0) {
+                System.out.println("See you next time");
+                user = null;
+                break;
+            }
 
         }
     }

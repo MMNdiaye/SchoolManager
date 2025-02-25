@@ -54,9 +54,17 @@ public class UserClient {
     }
 
     public void start() throws SQLException {
-        boolean isLoggedIn = login();
-        if (isLoggedIn)
-            client.launch();
+        while (true) {
+            boolean isLoggedIn = login();
+            if (isLoggedIn)
+                client.launch();
+            else {
+                System.out.println("Thanks.");
+                break;
+            }
+
+        }
+
     }
 
     public void launch() throws SQLException {
