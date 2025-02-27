@@ -10,13 +10,16 @@ import java.util.HashMap;
 
 public class SchoolManager {
     private ArrayList<Person> persons;
+    private ArrayList<Course> courses;
     private SQLConnector dbConnector;
 
     public SchoolManager() throws SQLException {
         persons = new ArrayList<>();
+        courses = new ArrayList<>();
         dbConnector = new SQLConnector();
         dbConnector.connectToDatabase();
         loadPersons();
+        loadCourses();
     }
 
     // Admin functions
@@ -35,13 +38,18 @@ public class SchoolManager {
         dbConnector.insertClass();
     }
 
-
-    public void addCourse(Class schoolClass, Course course) {
-        schoolClass.addCourse(course);
+    public void removeClass(Class classroom) throws  SQLException {
+        dbConnector.deleteClass(classroom);
     }
 
-    public void removeCourse(Class schoolClass, Course course) {
-        schoolClass.removeCourse(course);
+    public void addCourse(Course course) throws SQLException {
+        courses.add(course);
+        dbConnector.insertCourse(course);
+    }
+
+    public void removeCourse(Course course) throws SQLException {
+        courses.remove(course);
+        dbConnector.deleteCourse(course);
     }
 
     public void addStudent(Student student, int classId) throws SQLException {
@@ -59,9 +67,6 @@ public class SchoolManager {
         dbConnector.insertAdmin(admin);
     }
 
-    public void removeStudent(Student student, Class schoolClass) {
-        schoolClass.removeStudent(student);
-    }
 
     // Students functions
     public void seeGrades(Student student) {
@@ -80,14 +85,14 @@ public class SchoolManager {
         student.obtainsGrade(course, grade);
     }
 
-   public void seeClass(Class schoolClass, Course course) {
+   /* public void seeClass(Class schoolClass, Course course) {
         ArrayList<Student> students = schoolClass.getStudents();
         for (Student student : students) {
             System.out.println("Course: " + course);
             int grade = student.getGrade(course);
             System.out.println(student + ": " + grade);
         }
-   }
+   }*/
 
    // Manager functions
 
@@ -97,12 +102,28 @@ public class SchoolManager {
         if (!hasNextEntry)  // empty
             return false;
 
-        System.out.println();
         while (hasNextEntry) {
             System.out.print(rs.getInt("class_id") + ", ");
             hasNextEntry = rs.next();
         }
 
+        return true;
+    }
+
+    public boolean showTeachers() throws SQLException {
+        ResultSet resultSet = dbConnector.loadTeachers();
+        boolean hasTeacher = resultSet.next();
+        if (!hasTeacher)
+            return false;
+
+        while (hasTeacher) {
+            String firstName = resultSet.getString("first_name");
+            String lastName = resultSet.getString("last_name");
+            int teacherId = resultSet.getInt("teacher_id");
+            System.out.println("id: " + teacherId + " " + firstName +
+                    " " + lastName);
+            hasTeacher = resultSet.next();
+        }
         return true;
     }
 
@@ -153,6 +174,28 @@ public class SchoolManager {
             persons.add(person);
         }
     }
+
+    public void loadCourses() throws SQLException {
+        ResultSet resultSet = dbConnector.loadCourses();
+        while (resultSet.next()) {
+            int courseId = resultSet.getInt("course_id");
+            String subject = resultSet.getString("subject");
+            Teacher teacher = (Teacher) findPerson(resultSet.getInt("teacher_id"));
+            Class classroom = new Class(resultSet.getInt("class_id"));
+            Course course = new Course(courseId, subject, teacher, classroom);
+            courses.add(course);
+        }
+    }
+
+    public Course findCourse(int id) {
+        for (Course course : courses) {
+            boolean hasSameId = (course.getCourseId() == id);
+            if (hasSameId)
+                return course;
+        }
+        return null;
+    }
+
 
 
 }

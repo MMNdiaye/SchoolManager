@@ -1,9 +1,7 @@
 package sn.moustapha.schoolmanager.logic;
 
-import sn.moustapha.schoolmanager.objects.Admin;
-import sn.moustapha.schoolmanager.objects.Person;
-import sn.moustapha.schoolmanager.objects.Student;
-import sn.moustapha.schoolmanager.objects.Teacher;
+import sn.moustapha.schoolmanager.objects.*;
+import sn.moustapha.schoolmanager.objects.Class;
 
 import java.sql.*;
 
@@ -34,6 +32,22 @@ public class SQLConnector {
     public ResultSet loadClasses() throws SQLException {
         Statement statement = con.createStatement();
         String query = "SELECT * FROM classes";
+        ResultSet result = statement.executeQuery(query);
+        return result;
+    }
+
+    public ResultSet loadCourses() throws SQLException {
+        Statement statement = con.createStatement();
+        String query = "SELECT * FROM courses";
+        ResultSet result = statement.executeQuery(query);
+        return result;
+    }
+
+    public ResultSet loadTeachers() throws SQLException {
+        Statement statement = con.createStatement();
+        String query = "SELECT teacher_id, first_name, last_name "
+                        + "FROM teachers JOIN accounts ON "
+                        + "teachers.teacher_id = accounts.account_id";
         ResultSet result = statement.executeQuery(query);
         return result;
     }
@@ -98,6 +112,25 @@ public class SQLConnector {
         System.out.println("Admin account created successfully");
     }
 
+    public void insertCourse(Course course) throws SQLException {
+        //Inserting new course
+        String query = "INSERT INTO courses(subject, teacher_id, class_id) " +
+                "VALUES (?,?,?);";
+        PreparedStatement preparedStatement = con.prepareStatement(query);
+        preparedStatement.setString(1, course.getSubject());
+        preparedStatement.setInt(2, course.getTeacher().getUserId());
+        preparedStatement.setInt(3, course.getClassroom().getClassId());
+        preparedStatement.executeUpdate();
+
+        //return created course id
+        query = "SELECT Lastval();";
+        Statement statement = con.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        rs.next();
+        int courseId = rs.getInt(1);
+        course.setCourseId(courseId);
+    }
+
     // Deleting functions
 
     public void deleteAccount(Person person) throws SQLException {
@@ -108,6 +141,25 @@ public class SQLConnector {
         statement.setInt(1, accountId);
         statement.executeUpdate();
         System.out.println("Account deleted successfully");
+    }
+
+    public void deleteCourse(Course course) throws SQLException {
+        int courseId= course.getCourseId();
+
+        String query = "DELETE FROM courses WHERE course_id = ?";
+        PreparedStatement statement = con.prepareStatement(query);
+        statement.setInt(1, courseId);
+        statement.executeUpdate();
+        System.out.println("Course deleted successfully");
+    }
+
+    public void deleteClass(Class classroom) throws SQLException {
+        int classId = classroom.getClassId();
+        String query = "DELETE FROM classes WHERE class_id = ?";
+        PreparedStatement statement = con.prepareStatement(query);
+        statement.setInt(1, classId);
+        statement.executeUpdate();
+        System.out.println("Class deleted successfully");
     }
 
 }
