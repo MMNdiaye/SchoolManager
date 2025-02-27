@@ -38,7 +38,7 @@ public class SQLConnector {
         return result;
     }
 
-    // inserting functions
+    // Inserting functions
 
     public void insertClass() throws SQLException {
         Statement statement = con.createStatement();
@@ -98,5 +98,16 @@ public class SQLConnector {
         System.out.println("Admin account created successfully");
     }
 
+    // Deleting functions
+
+    public void deleteAccount(Person person) throws SQLException {
+        int accountId = person.getUserId();
+
+        String query = "DELETE FROM accounts WHERE account_id = ?;";
+        PreparedStatement statement = con.prepareStatement(query);
+        statement.setInt(1, accountId);
+        statement.executeUpdate();
+        System.out.println("Account deleted successfully");
+    }
 
 }

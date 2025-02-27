@@ -25,8 +25,10 @@ public class SchoolManager {
         persons.add(person);
     }
 
-    public void removePerson(Person person) {
+    public void removePerson(Person person) throws SQLException {
         persons.remove(person);
+        dbConnector.deleteAccount(person);
+
     }
 
     public void addClass() throws SQLException {
@@ -48,12 +50,12 @@ public class SchoolManager {
     }
 
     public void addTeacher(Teacher teacher) throws SQLException {
-        persons.add(teacher);
+        addPerson(teacher);
         dbConnector.insertTeacher(teacher);
     }
 
     public void addAdmin(Admin admin) throws SQLException {
-        persons.add(admin);
+        addPerson(admin);
         dbConnector.insertAdmin(admin);
     }
 
@@ -109,6 +111,15 @@ public class SchoolManager {
             boolean hasSameId = (person.getUserId() == id);
             boolean hasSamePassword = (person.getPassword().equals(password));
             if (hasSameId && hasSamePassword)
+                return person;
+        }
+        return null;
+    }
+
+    public Person findPerson(int id) {
+        for (Person person : persons) {
+            boolean hasSameId = (person.getUserId() == id);
+            if (hasSameId)
                 return person;
         }
         return null;

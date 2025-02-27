@@ -13,7 +13,7 @@ public class AdminClient extends UserClient{
     }
 
     public void launch() throws SQLException {
-        System.out.println("Hello " + user + "What do you want to do?");
+        System.out.println("Hello " + user + "! What do you want to do?");
         Scanner sc = new Scanner(System.in);
         while (true) {
             StringBuilder options = new StringBuilder();
@@ -32,8 +32,9 @@ public class AdminClient extends UserClient{
                     getAccountInfos();
                     break;
 
-                case 3:
-
+                case 2:
+                    removeAccount();
+                    break;
 
                 case 5 :
                     schoolManager.addClass();
@@ -103,6 +104,14 @@ public class AdminClient extends UserClient{
         schoolManager.addAdmin(admin);
     }
 
+
+    // Account removal method
+    private void removeAccount() throws SQLException {
+        System.out.println("Id of account to remove: ");
+        int accountId = sc.nextInt();
+        Person person = schoolManager.findPerson(accountId);
+        schoolManager.removePerson(person);
+    }
 
 
 }
