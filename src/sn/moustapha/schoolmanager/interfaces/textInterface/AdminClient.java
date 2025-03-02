@@ -8,11 +8,11 @@ import java.util.Scanner;
 
 public class AdminClient extends UserClient{
 
-    public AdminClient() throws SQLException {
+    public AdminClient() {
 
     }
 
-    public void launch() throws SQLException {
+    public void launch()  {
         System.out.println("Hello " + user + "! What do you want to do?");
         Scanner sc = new Scanner(System.in);
         StringBuilder options = new StringBuilder();
@@ -23,41 +23,47 @@ public class AdminClient extends UserClient{
         options.append("\n 5- Add class");
         options.append("\n 6- Remove class");
         options.append("\n 0- quit");
+
         while (true) {
             System.out.println(options);
             int option = sc.nextInt();
-            switch (option) {
-                case 1:
-                    getAccountInfos();
-                    break;
+            try {
 
-                case 2:
-                    removeAccount();
-                    break;
+                switch (option) {
+                    case 1:
+                        getAccountInfos();
+                        break;
 
-                case 3:
-                    getCourseInfos();
-                    break;
+                    case 2:
+                        removeAccount();
+                        break;
 
-                case 4:
-                    removeCourse();
-                    break;
+                    case 3:
+                        getCourseInfos();
+                        break;
 
-                case 5 :
-                    schoolManager.addClass();
-                    break;
+                    case 4:
+                        removeCourse();
+                        break;
 
-                case 6:
-                    removeClass();
-                    break;
+                    case 5 :
+                        schoolManager.addClass();
+                        break;
 
-                case 0:
-                    System.out.println("See you next time");
-                    user = null;
-                    break;
+                    case 6:
+                        removeClass();
+                        break;
 
-                default:
-                    break;
+                    case 0:
+                        System.out.println("See you next time");
+                        user = null;
+                        break;
+
+                    default:
+                        break;
+                }
+            }catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
 
         }
@@ -84,8 +90,9 @@ public class AdminClient extends UserClient{
 
     }
 
-    private void getStudentInfos(String firstName, String lastName, String password) throws SQLException {
+    private void getStudentInfos(String firstName, String lastName, String password) throws SQLException{
         // get class ids and create one if needed
+        System.out.print("Select a class id: ");
         boolean hasClasses = schoolManager.showClasses();
         if (!hasClasses) {
             System.out.println("No classes would you want to create one? y/n");
@@ -95,8 +102,7 @@ public class AdminClient extends UserClient{
             else
                 return;
         }
-        System.out.print("Select a class id: ");
-        schoolManager.showClasses();
+
         int classId = sc.nextInt();
         Student student = new Student(firstName, lastName, password);
         schoolManager.addStudent(student, classId);

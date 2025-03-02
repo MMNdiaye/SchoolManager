@@ -15,12 +15,14 @@ public class UserClient {
     private UserClient client;
     protected Scanner sc;
 
-    public UserClient() throws SQLException {
+    public UserClient()  {
+        if (!schoolManager.hasConnectedToDb())
+            throw new RuntimeException("Couldn't  connect to database");
         sc = new Scanner(System.in);
     }
 
 
-    protected final boolean login () throws SQLException {
+    protected final boolean login () {
         System.out.println("Login interface");
         boolean loggedIn = false;
         while (true) {
@@ -53,7 +55,7 @@ public class UserClient {
         return loggedIn;
     }
 
-    public void start() throws SQLException {
+    public void start() {
         while (true) {
             boolean isLoggedIn = login();
             if (isLoggedIn)
@@ -67,10 +69,11 @@ public class UserClient {
 
     }
 
-    public void launch() throws SQLException {
+    public void launch() {
 
     }
-    private void createUserInterface() throws SQLException {
+
+    private void createUserInterface() {
         if (user instanceof Student)
             client = new StudentClient();
         else if (user instanceof Teacher)

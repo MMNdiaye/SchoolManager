@@ -10,9 +10,8 @@ public class Main {
         try {
             UserClient ui = new UserClient();
             ui.start();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Found some issues with the database");
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

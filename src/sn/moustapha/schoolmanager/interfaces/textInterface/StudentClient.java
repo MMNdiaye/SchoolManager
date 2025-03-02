@@ -5,10 +5,10 @@ import java.util.Scanner;
 
 public class StudentClient extends UserClient {
 
-    public StudentClient() throws SQLException {
+    public StudentClient() {
     }
 
-    public void start() throws SQLException {
+    public void start() {
         System.out.println("Hello " + user + "What do you want to do?");
         Scanner sc = new Scanner(System.in);
         while (true) {

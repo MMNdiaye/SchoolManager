@@ -12,14 +12,22 @@ public class SchoolManager {
     private ArrayList<Person> persons;
     private ArrayList<Course> courses;
     private SQLConnector dbConnector;
+    private boolean connectedToDb;
 
-    public SchoolManager() throws SQLException {
+    public SchoolManager() {
         persons = new ArrayList<>();
         courses = new ArrayList<>();
         dbConnector = new SQLConnector();
-        dbConnector.connectToDatabase();
-        loadPersons();
-        loadCourses();
+        try {
+            dbConnector.connectToDatabase();
+            loadPersons();
+            loadCourses();
+            connectedToDb = true;
+        } catch (SQLException e) {
+            System.out.println("Error loading database");
+            connectedToDb = false;
+        }
+
     }
 
     // Admin functions
@@ -95,6 +103,10 @@ public class SchoolManager {
    }*/
 
    // Manager functions
+
+    public boolean hasConnectedToDb() {
+        return connectedToDb;
+    }
 
     public boolean showClasses() throws SQLException {
         ResultSet rs = dbConnector.loadClasses();
