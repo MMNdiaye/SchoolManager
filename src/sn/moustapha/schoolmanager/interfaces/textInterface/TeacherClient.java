@@ -12,7 +12,6 @@ public class TeacherClient extends UserClient{
 
     public void launch() {
         System.out.println("Hello " + user + "! What do you want to do?");
-        Scanner sc = new Scanner(System.in);
         StringBuilder options = new StringBuilder();
         options.append("\n 1- Consult students");
         options.append("\n 2- Grade student");

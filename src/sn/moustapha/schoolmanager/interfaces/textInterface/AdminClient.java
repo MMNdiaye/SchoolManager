@@ -14,7 +14,6 @@ public class AdminClient extends UserClient{
 
     public void launch()  {
         System.out.println("Hello " + user + "! What do you want to do?");
-        Scanner sc = new Scanner(System.in);
         StringBuilder options = new StringBuilder();
         options.append("\n 1- Create account");
         options.append("\n 2- Remove account");
