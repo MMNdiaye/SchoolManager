@@ -66,6 +66,9 @@ public class AdminClient extends UserClient{
                 System.out.println(e.getMessage());
             }
 
+            if (user == null)
+                break;
+
         }
     }
 

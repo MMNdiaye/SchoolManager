@@ -43,6 +43,17 @@ public class SQLConnector {
         return result;
     }
 
+    public ResultSet loadStudents(int classId, int courseId) throws SQLException {
+        String query = "SELECT student_id, first_name, last_name, grade" +
+                " FROM accounts JOIN (students JOIN grades"  +
+                " ON students.student_id = grades.student_id)" +
+                " ON students.student_id = accounts.account_id" +
+                " WHERE class_id = " + classId + " AND course_id = " + courseId;
+        PreparedStatement statement = con.prepareStatement(query);
+        ResultSet result = statement.executeQuery();
+        return result;
+    }
+
     public ResultSet loadTeachers() throws SQLException {
         Statement statement = con.createStatement();
         String query = "SELECT teacher_id, first_name, last_name "
@@ -81,6 +92,30 @@ public class SQLConnector {
 
     }
 
+    private void initializeGrades(int studentId, int classId) throws SQLException {
+        ResultSet courses = getCourses(classId);
+        StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO grades(student_id, course_id) VALUES");
+        while(courses.next()) {
+            query.append("(").append(studentId).append(", ")
+                    .append(courses.getInt("course_id")).append(")");
+            if (!courses.isLast())
+                query.append(", ");
+        }
+
+        Statement statement = con.createStatement();
+        statement.executeUpdate(query.toString());
+
+    }
+
+    private ResultSet getCourses(int classId) throws SQLException {
+        Statement statement = con.createStatement();
+        String query = "SELECT course_id FROM courses " +
+                " WHERE class_id = " + classId;
+        ResultSet result = statement.executeQuery(query);
+        return result;
+    }
+
     public void insertStudent(Student student , int classId) throws SQLException {
         insertAccount(student,"Student");
 
@@ -89,6 +124,7 @@ public class SQLConnector {
         statement.setInt(1, student.getUserId());
         statement.setInt(2, classId);
         statement.executeUpdate();
+        initializeGrades(student.getUserId(), classId);
         System.out.println("Student account created successfully");
     }
 

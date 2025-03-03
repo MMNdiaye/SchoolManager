@@ -93,14 +93,30 @@ public class SchoolManager {
         student.obtainsGrade(course, grade);
     }
 
-   /* public void seeClass(Class schoolClass, Course course) {
-        ArrayList<Student> students = schoolClass.getStudents();
-        for (Student student : students) {
-            System.out.println("Course: " + course);
-            int grade = student.getGrade(course);
-            System.out.println(student + ": " + grade);
+    public void showClasses(Person teacher) {
+        for (Course course : courses) {
+            if (course.getTeacher().getUserId() == teacher.getUserId())
+                System.out.println("Class id: " + course.getClassroom().getClassId() +
+                        " Course Id: " + course.getCourseId() +
+                        "Subject: " + course.getSubject());
         }
-   }*/
+
+    }
+
+    public void showStudents(int classId, int courseId) throws SQLException {
+        ResultSet resultSet = dbConnector.loadStudents(classId, courseId);
+        while (resultSet.next()) {
+            int studentId = resultSet.getInt("student_id");
+            String firstName = resultSet.getString("first_name");
+            String lastName = resultSet.getString("last_name");
+            int grade = resultSet.getInt("grade");
+            System.out.println("id: " + studentId +
+                                firstName + " " + lastName +
+                                "grade: " + grade);
+        }
+
+
+    }
 
    // Manager functions
 

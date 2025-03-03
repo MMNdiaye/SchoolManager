@@ -20,6 +20,7 @@ public abstract class Person  {
         this.password = password;
     }
 
+
     public String getFirstName() {
         return firstName;
     }
