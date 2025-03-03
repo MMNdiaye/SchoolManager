@@ -8,48 +8,66 @@ import java.util.Scanner;
 
 public class AdminClient extends UserClient{
 
-    public AdminClient() throws SQLException {
+    public AdminClient() {
 
     }
 
-    public void launch() throws SQLException {
+    public void launch()  {
         System.out.println("Hello " + user + "! What do you want to do?");
         Scanner sc = new Scanner(System.in);
+        StringBuilder options = new StringBuilder();
+        options.append("\n 1- Create account");
+        options.append("\n 2- Remove account");
+        options.append("\n 3- Add course");
+        options.append("\n 4- Remove course");
+        options.append("\n 5- Add class");
+        options.append("\n 6- Remove class");
+        options.append("\n 0- quit");
+
         while (true) {
-            StringBuilder options = new StringBuilder();
-            options.append("\n 1- Create account");
-            options.append("\n 2- Remove account");
-            options.append("\n 3- Add course");
-            options.append("\n 4- Remove course");
-            options.append("\n 5- Add class");
-            options.append("\n 6- Remove class");
-            options.append("\n 0- quit");
             System.out.println(options);
-
             int option = sc.nextInt();
-            switch (option) {
-                case 1:
-                    getAccountInfos();
-                    break;
+            try {
 
-                case 2:
-                    removeAccount();
-                    break;
+                switch (option) {
+                    case 1:
+                        getAccountInfos();
+                        break;
 
-                case 5 :
-                    schoolManager.addClass();
-                    break;
+                    case 2:
+                        removeAccount();
+                        break;
 
-                default:
-                    option = 0;
-                    break;
+                    case 3:
+                        getCourseInfos();
+                        break;
+
+                    case 4:
+                        removeCourse();
+                        break;
+
+                    case 5 :
+                        schoolManager.addClass();
+                        break;
+
+                    case 6:
+                        removeClass();
+                        break;
+
+                    case 0:
+                        System.out.println("See you next time");
+                        user = null;
+                        break;
+
+                    default:
+                        break;
+                }
+            }catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
 
-            if (option == 0) {
-                System.out.println("See you next time");
-                user = null;
+            if (user == null)
                 break;
-            }
 
         }
     }
@@ -68,15 +86,16 @@ public class AdminClient extends UserClient{
 
         if (role.equals("Student"))
             getStudentInfos(firstName, lastName, password);
-        else if (role.equals("Teachers"))
+        else if (role.equals("Teacher"))
             getTeacherInfos(firstName, lastName, password);
         else
             getAdminInfos(firstName, lastName, password);
 
     }
 
-    private void getStudentInfos(String firstName, String lastName, String password) throws SQLException {
+    private void getStudentInfos(String firstName, String lastName, String password) throws SQLException{
         // get class ids and create one if needed
+        System.out.print("Select a class id: ");
         boolean hasClasses = schoolManager.showClasses();
         if (!hasClasses) {
             System.out.println("No classes would you want to create one? y/n");
@@ -86,8 +105,7 @@ public class AdminClient extends UserClient{
             else
                 return;
         }
-        System.out.print("Select a class id: ");
-        schoolManager.showClasses();
+
         int classId = sc.nextInt();
         Student student = new Student(firstName, lastName, password);
         schoolManager.addStudent(student, classId);
@@ -112,6 +130,54 @@ public class AdminClient extends UserClient{
         Person person = schoolManager.findPerson(accountId);
         schoolManager.removePerson(person);
     }
+
+    //Course creation method
+    private void getCourseInfos() throws SQLException {
+        System.out.print("\nEnter course subject: ");
+        String subject = sc.next();
+
+        System.out.println("Enter teacher id: ");
+        boolean foundTeachers = schoolManager.showTeachers();
+        if(!foundTeachers) {
+            System.out.println("No teachers in the school");
+            return;
+        }
+        int teacherId = sc.nextInt();
+
+        System.out.println("Enter class id: ");
+        boolean foundClasses = schoolManager.showClasses();
+        if(!foundClasses) {
+            System.out.println("No classes in the school");
+            return;
+        }
+        int classId = sc.nextInt();
+
+        Teacher teacher = (Teacher) schoolManager.findPerson(teacherId);
+        Class classroom = new Class(classId);
+        Course course = new Course(subject, teacher, classroom);
+        schoolManager.addCourse(course);
+
+
+    }
+
+    // Course removal method
+    private void removeCourse() throws SQLException {
+        System.out.println("Id of course to remove: ");
+        int courseId = sc.nextInt();
+        Course course = schoolManager.findCourse(courseId);
+        schoolManager.removeCourse(course);
+    }
+
+    // Class removal method
+    private void removeClass() throws SQLException {
+        System.out.println("Id of class to remove: ");
+        int classId = sc.nextInt();
+        Class classroom = new Class(classId);
+        schoolManager.removeClass(classroom);
+    }
+
+
+
 
 
 }

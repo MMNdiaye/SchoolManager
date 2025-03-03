@@ -10,13 +10,24 @@ import java.util.HashMap;
 
 public class SchoolManager {
     private ArrayList<Person> persons;
+    private ArrayList<Course> courses;
     private SQLConnector dbConnector;
+    private boolean connectedToDb;
 
-    public SchoolManager() throws SQLException {
+    public SchoolManager() {
         persons = new ArrayList<>();
+        courses = new ArrayList<>();
         dbConnector = new SQLConnector();
-        dbConnector.connectToDatabase();
-        loadPersons();
+        try {
+            dbConnector.connectToDatabase();
+            loadPersons();
+            loadCourses();
+            connectedToDb = true;
+        } catch (SQLException e) {
+            System.out.println("Error loading database");
+            connectedToDb = false;
+        }
+
     }
 
     // Admin functions
@@ -35,13 +46,18 @@ public class SchoolManager {
         dbConnector.insertClass();
     }
 
-
-    public void addCourse(Class schoolClass, Course course) {
-        schoolClass.addCourse(course);
+    public void removeClass(Class classroom) throws  SQLException {
+        dbConnector.deleteClass(classroom);
     }
 
-    public void removeCourse(Class schoolClass, Course course) {
-        schoolClass.removeCourse(course);
+    public void addCourse(Course course) throws SQLException {
+        courses.add(course);
+        dbConnector.insertCourse(course);
+    }
+
+    public void removeCourse(Course course) throws SQLException {
+        courses.remove(course);
+        dbConnector.deleteCourse(course);
     }
 
     public void addStudent(Student student, int classId) throws SQLException {
@@ -59,12 +75,9 @@ public class SchoolManager {
         dbConnector.insertAdmin(admin);
     }
 
-    public void removeStudent(Student student, Class schoolClass) {
-        schoolClass.removeStudent(student);
-    }
 
     // Students functions
-    public void seeGrades(Student student) {
+    /* public void seeGrades(Student student) {
         HashMap<Course, Integer> grades = student.getGrades();
         for (Course course: grades.keySet()) {
             String subject = course.getSubject();
@@ -73,23 +86,45 @@ public class SchoolManager {
             System.out.println(subject + ": " + grade +" Teacher: Mr." +
                     teacher);
         }
-    }
+    } */
 
     //Teacher functions
-    public void gradeStudent(Student student,Course course, int grade) {
-        student.obtainsGrade(course, grade);
+    public void gradeStudent(Person student, Course course, int grade) throws SQLException {
+        int studentId = student.getUserId();
+        int courseId = course.getCourseId();
+        dbConnector.gradeStudent(studentId, courseId, grade);
     }
 
-   public void seeClass(Class schoolClass, Course course) {
-        ArrayList<Student> students = schoolClass.getStudents();
-        for (Student student : students) {
-            System.out.println("Course: " + course);
-            int grade = student.getGrade(course);
-            System.out.println(student + ": " + grade);
+    public void showClasses(Person teacher) {
+        for (Course course : courses) {
+            if (course.getTeacher().getUserId() == teacher.getUserId())
+                System.out.println("Class id: " + course.getClassroom().getClassId() +
+                        " Course Id: " + course.getCourseId() +
+                        " Subject: " + course.getSubject());
         }
-   }
+
+    }
+
+    public void showStudents(int classId, int courseId) throws SQLException {
+        ResultSet resultSet = dbConnector.loadStudents(classId, courseId);
+        while (resultSet.next()) {
+            int studentId = resultSet.getInt("student_id");
+            String firstName = resultSet.getString("first_name");
+            String lastName = resultSet.getString("last_name");
+            int grade = resultSet.getInt("grade");
+            System.out.println("id: " + studentId + " " +
+                                firstName + " " + lastName + " " +
+                                "grade: " + grade);
+        }
+
+
+    }
 
    // Manager functions
+
+    public boolean hasConnectedToDb() {
+        return connectedToDb;
+    }
 
     public boolean showClasses() throws SQLException {
         ResultSet rs = dbConnector.loadClasses();
@@ -97,12 +132,28 @@ public class SchoolManager {
         if (!hasNextEntry)  // empty
             return false;
 
-        System.out.println();
         while (hasNextEntry) {
             System.out.print(rs.getInt("class_id") + ", ");
             hasNextEntry = rs.next();
         }
 
+        return true;
+    }
+
+    public boolean showTeachers() throws SQLException {
+        ResultSet resultSet = dbConnector.loadTeachers();
+        boolean hasTeacher = resultSet.next();
+        if (!hasTeacher)
+            return false;
+
+        while (hasTeacher) {
+            String firstName = resultSet.getString("first_name");
+            String lastName = resultSet.getString("last_name");
+            int teacherId = resultSet.getInt("teacher_id");
+            System.out.println("id: " + teacherId + " " + firstName +
+                    " " + lastName);
+            hasTeacher = resultSet.next();
+        }
         return true;
     }
 
@@ -153,6 +204,28 @@ public class SchoolManager {
             persons.add(person);
         }
     }
+
+    public void loadCourses() throws SQLException {
+        ResultSet resultSet = dbConnector.loadCourses();
+        while (resultSet.next()) {
+            int courseId = resultSet.getInt("course_id");
+            String subject = resultSet.getString("subject");
+            Teacher teacher = (Teacher) findPerson(resultSet.getInt("teacher_id"));
+            Class classroom = new Class(resultSet.getInt("class_id"));
+            Course course = new Course(courseId, subject, teacher, classroom);
+            courses.add(course);
+        }
+    }
+
+    public Course findCourse(int id) {
+        for (Course course : courses) {
+            boolean hasSameId = (course.getCourseId() == id);
+            if (hasSameId)
+                return course;
+        }
+        return null;
+    }
+
 
 
 }
