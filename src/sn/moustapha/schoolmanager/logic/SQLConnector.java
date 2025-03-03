@@ -63,6 +63,17 @@ public class SQLConnector {
         return result;
     }
 
+    public ResultSet loadGrades(int studentId) throws SQLException {
+        Statement statement = con.createStatement();
+        String query = "SELECT subject, grade FROM grades JOIN courses " +
+                "ON grades.course_id = courses.course_id " +
+                "WHERE grades.student_id = " + studentId +
+                " ORDER BY subject";
+        ResultSet result = statement.executeQuery(query);
+        return result;
+
+    }
+
     // Inserting functions
 
     public void insertClass() throws SQLException {

@@ -77,16 +77,15 @@ public class SchoolManager {
 
 
     // Students functions
-    /* public void seeGrades(Student student) {
-        HashMap<Course, Integer> grades = student.getGrades();
-        for (Course course: grades.keySet()) {
-            String subject = course.getSubject();
-            Teacher teacher = course.getTeacher();
-            int grade = grades.get(course);
-            System.out.println(subject + ": " + grade +" Teacher: Mr." +
-                    teacher);
+     public void seeGrades(Person student) throws SQLException {
+        ResultSet resultSet = dbConnector.loadGrades(student.getUserId());
+        while (resultSet.next()) {
+            String subject = resultSet.getString("subject");
+            int grade = resultSet.getInt("grade");
+            System.out.println("Subject: " + subject);
+            System.out.println("Grade: " + grade);
         }
-    } */
+    }
 
     //Teacher functions
     public void gradeStudent(Person student, Course course, int grade) throws SQLException {
