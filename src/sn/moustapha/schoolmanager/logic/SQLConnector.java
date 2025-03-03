@@ -44,7 +44,7 @@ public class SQLConnector {
     }
 
     public ResultSet loadStudents(int classId, int courseId) throws SQLException {
-        String query = "SELECT student_id, first_name, last_name, grade" +
+        String query = "SELECT students.student_id, first_name, last_name, grade" +
                 " FROM accounts JOIN (students JOIN grades"  +
                 " ON students.student_id = grades.student_id)" +
                 " ON students.student_id = accounts.account_id" +
@@ -197,5 +197,16 @@ public class SQLConnector {
         statement.executeUpdate();
         System.out.println("Class deleted successfully");
     }
+
+    // Updating functions
+
+    public void gradeStudent(int studentId, int courseId, int grade) throws SQLException {
+        String query = "UPDATE grades SET grade = " + grade +
+                " WHERE student_id = " + studentId +
+                " AND course_id = " + courseId;
+        PreparedStatement statement = con.prepareStatement(query);
+        statement.executeUpdate();
+    }
+
 
 }

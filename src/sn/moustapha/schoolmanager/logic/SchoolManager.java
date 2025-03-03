@@ -77,7 +77,7 @@ public class SchoolManager {
 
 
     // Students functions
-    public void seeGrades(Student student) {
+    /* public void seeGrades(Student student) {
         HashMap<Course, Integer> grades = student.getGrades();
         for (Course course: grades.keySet()) {
             String subject = course.getSubject();
@@ -86,11 +86,13 @@ public class SchoolManager {
             System.out.println(subject + ": " + grade +" Teacher: Mr." +
                     teacher);
         }
-    }
+    } */
 
     //Teacher functions
-    public void gradeStudent(Student student,Course course, int grade) {
-        student.obtainsGrade(course, grade);
+    public void gradeStudent(Person student, Course course, int grade) throws SQLException {
+        int studentId = student.getUserId();
+        int courseId = course.getCourseId();
+        dbConnector.gradeStudent(studentId, courseId, grade);
     }
 
     public void showClasses(Person teacher) {
@@ -98,7 +100,7 @@ public class SchoolManager {
             if (course.getTeacher().getUserId() == teacher.getUserId())
                 System.out.println("Class id: " + course.getClassroom().getClassId() +
                         " Course Id: " + course.getCourseId() +
-                        "Subject: " + course.getSubject());
+                        " Subject: " + course.getSubject());
         }
 
     }
@@ -110,8 +112,8 @@ public class SchoolManager {
             String firstName = resultSet.getString("first_name");
             String lastName = resultSet.getString("last_name");
             int grade = resultSet.getInt("grade");
-            System.out.println("id: " + studentId +
-                                firstName + " " + lastName +
+            System.out.println("id: " + studentId + " " +
+                                firstName + " " + lastName + " " +
                                 "grade: " + grade);
         }
 

@@ -1,5 +1,7 @@
 package sn.moustapha.schoolmanager.interfaces.textInterface;
 
+import sn.moustapha.schoolmanager.objects.Course;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -8,8 +10,8 @@ public class TeacherClient extends UserClient{
     public TeacherClient() {
     }
 
-    public void start() {
-        System.out.println("Hello " + user + "What do you want to do?");
+    public void launch() {
+        System.out.println("Hello " + user + "! What do you want to do?");
         Scanner sc = new Scanner(System.in);
         StringBuilder options = new StringBuilder();
         options.append("\n 1- Consult students");
@@ -28,18 +30,19 @@ public class TeacherClient extends UserClient{
                         gradeStudent();
                         break;
 
+                    case 0:
+                        user = null;
+                        System.out.println("See you next time");
+                        break;
+
                     default:
                         break;
                 }
             }catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            if (option == 0) {
-                System.out.println("See you next time");
-                user = null;
-                login();
-                break;
-            }
+            if (user == null)
+               break;
 
         }
     }
@@ -54,9 +57,15 @@ public class TeacherClient extends UserClient{
     }
 
     public void gradeStudent() throws SQLException {
+        System.out.println("Select course id: ");
+        int courseId = sc.nextInt();
         System.out.println("Select student id: ");
         int studentId  = sc.nextInt();
+        System.out.println("Grade (0 - 20): ");
+        int grade = sc.nextInt();
         // get student if is taught by teacher
+        schoolManager.gradeStudent(schoolManager.findPerson(studentId),
+                schoolManager.findCourse(courseId), grade);
 
     }
 }
